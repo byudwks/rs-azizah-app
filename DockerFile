@@ -1,5 +1,5 @@
 # Gunakan image resmi PHP 8.2 dengan Composer
-FROM php:8.2-cli
+FROM php:8.3-cli
 
 # Install dependencies dasar + ekstensi yang dibutuhkan Laravel & Filament
 RUN apt-get update && apt-get install -y \

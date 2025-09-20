@@ -19,3 +19,7 @@ COPY . .
 RUN composer install --optimize-autoloader --no-interaction --no-scripts
 
 CMD ["php-fpm"]
+
+RUN apt-get update && apt-get install -y libicu-dev libzip-dev unzip \
+    && docker-php-ext-install intl zip pdo pdo_mysql \
+    && docker-php-ext-enable intl zip

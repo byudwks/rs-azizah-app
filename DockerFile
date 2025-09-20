@@ -1,4 +1,3 @@
-# Gunakan image resmi PHP 8.2 dengan Composer
 FROM php:8.3-cli
 
 # Install dependencies dasar + ekstensi yang dibutuhkan Laravel & Filament
@@ -12,11 +11,14 @@ COPY --from=composer:2.7 /usr/bin/composer /usr/bin/composer
 # Set working directory
 WORKDIR /app
 
+# Copy composer files terlebih dahulu untuk cache layer
+COPY composer.json composer.lock ./
+
+# Install dependency Laravel (sebelum copy semua file, agar cache lebih efisien)
+RUN composer install --optimize-autoloader --no-dev
+
 # Copy semua file project
 COPY . .
-
-# Install dependency Laravel
-RUN composer install --optimize-autoloader --no-dev
 
 # Generate cache
 RUN php artisan config:cache \

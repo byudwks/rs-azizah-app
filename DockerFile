@@ -27,3 +27,5 @@ RUN php artisan config:cache \
 
 # Jalankan Laravel
 CMD php artisan serve --host=0.0.0.0 --port=$PORT
+
+RUN php -m && php --ri intl && php --ri zip

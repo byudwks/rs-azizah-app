@@ -1,25 +1,38 @@
+# Gunakan PHP 8.3 FPM
 FROM php:8.3-fpm
 
-# Install dependencies yang dibutuhkan
+# Set working directory
+WORKDIR /var/www/html
+
+# Install dependencies sistem
 RUN apt-get update && apt-get install -y \
     libzip-dev \
     libicu-dev \
     unzip \
     git \
-    && docker-php-ext-install zip intl pdo pdo_mysql \
-    && docker-php-ext-enable intl zip
+    curl \
+    libonig-dev \
+    libpng-dev \
+    libjpeg-dev \
+    libfreetype6-dev \
+    && docker-php-ext-install zip intl pdo_mysql mbstring gd \
+    && docker-php-ext-enable zip intl pdo_mysql mbstring gd
 
 # Install Composer
 COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 
-WORKDIR /var/www/html
-
+# Copy project
 COPY . .
 
+# Install dependencies PHP
 RUN composer install --optimize-autoloader --no-interaction --no-scripts
 
-CMD ["php-fpm"]
+# Set permissions untuk Laravel
+RUN chown -R www-data:www-data /var/www/html \
+    && chmod -R 775 storage bootstrap/cache
 
-RUN apt-get update && apt-get install -y libicu-dev libzip-dev unzip \
-    && docker-php-ext-install intl zip pdo pdo_mysql \
-    && docker-php-ext-enable intl zip
+# Expose port default Railway
+EXPOSE 8080
+
+# Command untuk running Laravel
+CMD php artisan serve --host=0.0.0.0 --port=8080

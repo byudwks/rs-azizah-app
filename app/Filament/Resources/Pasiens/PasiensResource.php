@@ -80,6 +80,7 @@ class PasiensResource extends Resource
     {
         return $table
             ->query(fn () => Pasiens::query())
+            ->defaultSort('created_at', 'desc')
             ->recordTitleAttribute('Pasiens')
             ->columns([
                 TextColumn::make('name')
